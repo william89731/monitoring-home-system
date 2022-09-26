@@ -87,5 +87,30 @@ monitor e alerts in grafana:
 
 ![immagine](https://user-images.githubusercontent.com/68069659/192302669-ca7b4989-2e5e-4cc3-99f0-0101245828f1.png)
 
+# SERVERS RESOURCES
+
+### Requirements
+
+[nodered](https://nodered.org/);
+
+[mysql](https://www.mysql.com/);
+
+[grafana](https://grafana.com/);
+
+[glances](https://nicolargo.github.io/glances/)
+
+### Get started
+
+Import this [flow]() in nodered; send http request to glances and push data to mysql:
+
+![immagine](https://user-images.githubusercontent.com/68069659/192369074-96bf47f9-8261-4699-843c-10d104973139.png)
+
+Monitoring and alert in grafana:
+
+![immagine](https://user-images.githubusercontent.com/68069659/192369350-2d0bd1d9-0a26-46e2-beb3-46110b7c5311.png)
+
+
+
+
 
 
