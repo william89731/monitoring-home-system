@@ -62,15 +62,15 @@ set the alerts in grafana:
 
 ### Get started
 
-import this [flow]() for check your instant consumption in Watt:
+import this [flow](https://github.com/william89731/monitoring-home-system/blob/main/WATT.json) for check your instant consumption in Watt:
 
 ![Schermata del 2022-09-26 15-58-08](https://user-images.githubusercontent.com/68069659/192295646-07afd6a9-c342-44ba-afc7-d1e54d250c94.png)
 
- [this]() for Kilowatt/H  (day):
+ [this](https://github.com/william89731/monitoring-home-system/blob/main/KWH_DAY.json) for Kilowatt/H  (day):
 
 ![Schermata del 2022-09-26 16-01-11](https://user-images.githubusercontent.com/68069659/192296314-4a149585-2435-4d22-99b3-dabf18c98494.png)
 
- [this]() for Kilowatt/H (week):
+ [this](https://github.com/william89731/monitoring-home-system/blob/main/KWH_WEEK.json) for Kilowatt/H (week):
 
 ![Schermata del 2022-09-26 16-04-18](https://user-images.githubusercontent.com/68069659/192297049-d5f21381-48f9-4a00-9553-33f578fadcdf.png)
 
