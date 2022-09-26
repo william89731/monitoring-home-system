@@ -36,13 +36,15 @@ install iperf3 in each server:
 ```bash
 sudo apt update && sudo apt install -y iperf3
 ```
-import this [flow](https://github.com/william89731/internet-speed/blob/main/speed.json) in nodered:
+import this [flow]() in nodered:
 
-![Schermata del 2022-09-24 15-28-46](https://user-images.githubusercontent.com/68069659/192100690-11c151fa-1ba0-4df3-bd84-dff35cc9e57e.png)
+![immagine](https://user-images.githubusercontent.com/68069659/192300990-2f806d56-74d5-4fdf-895b-0468b93ca7fc.png)
 
-beautiful dashboards in grafana:
 
-![Schermata del 2022-09-24 15-42-56](https://user-images.githubusercontent.com/68069659/192101306-c5fbfc32-15fc-439d-83b5-24cd605d1a1d.png)
+set the alerts in grafana:
+
+![immagine](https://user-images.githubusercontent.com/68069659/192301423-56563a5d-3cc4-4da0-8b43-3ca9b359db2b.png)
+
 
 # ENERGY
 
@@ -58,7 +60,7 @@ beautiful dashboards in grafana:
 
 [mqtt](https://mqtt.org/)
 
-### Get startted
+### Get started
 
 import this [flow]() for check your instant consumption in Watt:
 
@@ -80,4 +82,10 @@ this [flow]() for Kilowatt/H (month):
 monitoring your devices. take  [here](): 
 
 ![immagine](https://user-images.githubusercontent.com/68069659/192298469-cdbb6da6-6519-42d2-9453-a6156cdde760.png)
+
+monitor e alerts in grafana:
+
+![immagine](https://user-images.githubusercontent.com/68069659/192302669-ca7b4989-2e5e-4cc3-99f0-0101245828f1.png)
+
+
 
