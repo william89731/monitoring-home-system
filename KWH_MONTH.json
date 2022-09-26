@@ -1,0 +1,241 @@
+[
+    {
+        "id": "3c6388502ffa2dba",
+        "type": "group",
+        "z": "a21e40505d87599a",
+        "name": "KWH/MONTH",
+        "style": {
+            "label": true,
+            "stroke": "#ff0000"
+        },
+        "nodes": [
+            "6f2c510bc31dba4b",
+            "d86a3d448b18e8a8",
+            "5190a33d74108e32",
+            "1b61e9b22a83cb6f",
+            "3341376ad52150a8",
+            "400b013ca7c83fc7",
+            "8451abde619029ab",
+            "0a207afcc5350e85",
+            "3c51046467df5893",
+            "314672e0a5dea6a7"
+        ],
+        "x": 194,
+        "y": 139,
+        "w": 792,
+        "h": 162
+    },
+    {
+        "id": "6f2c510bc31dba4b",
+        "type": "mqtt in",
+        "z": "a21e40505d87599a",
+        "g": "3c6388502ffa2dba",
+        "name": "zigbee2mqtt/energie meter",
+        "topic": "zigbee2mqtt/energie meter",
+        "qos": "0",
+        "datatype": "json",
+        "broker": "",
+        "nl": false,
+        "rap": false,
+        "inputs": 0,
+        "x": 330,
+        "y": 180,
+        "wires": [
+            [
+                "d86a3d448b18e8a8"
+            ]
+        ]
+    },
+    {
+        "id": "d86a3d448b18e8a8",
+        "type": "template",
+        "z": "a21e40505d87599a",
+        "g": "3c6388502ffa2dba",
+        "name": "energia",
+        "field": "payload",
+        "fieldType": "msg",
+        "format": "handlebars",
+        "syntax": "mustache",
+        "template": "{{payload.power}}",
+        "output": "str",
+        "x": 540,
+        "y": 180,
+        "wires": [
+            [
+                "5190a33d74108e32"
+            ]
+        ]
+    },
+    {
+        "id": "5190a33d74108e32",
+        "type": "watt2kwh",
+        "z": "a21e40505d87599a",
+        "g": "3c6388502ffa2dba",
+        "format": "kwh",
+        "maximum": "5",
+        "maximumunit": "mins",
+        "name": "",
+        "x": 680,
+        "y": 180,
+        "wires": [
+            [
+                "1b61e9b22a83cb6f"
+            ]
+        ]
+    },
+    {
+        "id": "1b61e9b22a83cb6f",
+        "type": "function",
+        "z": "a21e40505d87599a",
+        "g": "3c6388502ffa2dba",
+        "name": "Store kwh",
+        "func": "const inputVal = msg.payload;\nif (inputVal == \"reset\"){\n flow.set(\"energyValMonth\",0); \n } else {\nsavedVal = flow.get('energyValMonth')||0;\nsavedVal += inputVal;\nflow.set(\"energyValMonth\",savedVal);\n\nmsg.payload = savedVal;\nreturn msg;\n}",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 840,
+        "y": 180,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "3341376ad52150a8",
+        "type": "inject",
+        "z": "a21e40505d87599a",
+        "g": "3c6388502ffa2dba",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "00 00 * * *",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 310,
+        "y": 260,
+        "wires": [
+            [
+                "0a207afcc5350e85"
+            ]
+        ]
+    },
+    {
+        "id": "400b013ca7c83fc7",
+        "type": "mysql",
+        "z": "a21e40505d87599a",
+        "g": "3c6388502ffa2dba",
+        "mydb": "",
+        "name": "",
+        "x": 910,
+        "y": 260,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "8451abde619029ab",
+        "type": "function",
+        "z": "a21e40505d87599a",
+        "g": "3c6388502ffa2dba",
+        "name": "push to db",
+        "func": "const a = new Date().toString ();\nconst parts = a.split(\" \");\nconst Now = parts[1]  +\" \"+ parts[2] + \" \"+ parts[3];\n\n\nmsg.payload=[flow.get(\"energyValMonth\") , Now];\n\nmsg.topic=\"INSERT INTO kwH_month (`kwH`,`time`) VALUES (?,?);\"\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 770,
+        "y": 260,
+        "wires": [
+            [
+                "400b013ca7c83fc7"
+            ]
+        ]
+    },
+    {
+        "id": "0a207afcc5350e85",
+        "type": "function",
+        "z": "a21e40505d87599a",
+        "g": "3c6388502ffa2dba",
+        "name": "function 18",
+        "func": "const A = Date().toString ();\nconst Parts = A.split(\" \");\nconst Now = Parts[2] + \" \" + Parts[4] ;\n\n\nmsg.payload = Now ;\nreturn msg;     ",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 470,
+        "y": 260,
+        "wires": [
+            [
+                "3c51046467df5893"
+            ]
+        ]
+    },
+    {
+        "id": "3c51046467df5893",
+        "type": "switch",
+        "z": "a21e40505d87599a",
+        "g": "3c6388502ffa2dba",
+        "name": "",
+        "property": "payload",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "01 00:01:00",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "01 00:00:00",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 2,
+        "x": 610,
+        "y": 260,
+        "wires": [
+            [
+                "314672e0a5dea6a7"
+            ],
+            [
+                "8451abde619029ab"
+            ]
+        ]
+    },
+    {
+        "id": "314672e0a5dea6a7",
+        "type": "template",
+        "z": "a21e40505d87599a",
+        "g": "3c6388502ffa2dba",
+        "name": "reset",
+        "field": "payload",
+        "fieldType": "msg",
+        "format": "handlebars",
+        "syntax": "mustache",
+        "template": "reset",
+        "output": "str",
+        "x": 730,
+        "y": 220,
+        "wires": [
+            [
+                "1b61e9b22a83cb6f"
+            ]
+        ]
+    }
+]
