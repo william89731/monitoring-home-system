@@ -1,0 +1,171 @@
+[
+    {
+        "id": "5a126a7d65d4d61e",
+        "type": "mqtt in",
+        "z": "a21e40505d87599a",
+        "g": "e119530f2eb79d50",
+        "name": "zigbee2mqtt/energie meter",
+        "topic": "zigbee2mqtt/energie meter",
+        "qos": "0",
+        "datatype": "json",
+        "broker": "",
+        "nl": false,
+        "rap": false,
+        "inputs": 0,
+        "x": 250,
+        "y": 140,
+        "wires": [
+            [
+                "18eba9284482224b"
+            ]
+        ]
+    },
+    {
+        "id": "18eba9284482224b",
+        "type": "template",
+        "z": "a21e40505d87599a",
+        "g": "e119530f2eb79d50",
+        "name": "energia",
+        "field": "payload",
+        "fieldType": "msg",
+        "format": "handlebars",
+        "syntax": "mustache",
+        "template": "{{payload.power}}",
+        "output": "str",
+        "x": 440,
+        "y": 140,
+        "wires": [
+            [
+                "cfe88950aa5cb720"
+            ]
+        ]
+    },
+    {
+        "id": "cfe88950aa5cb720",
+        "type": "watt2kwh",
+        "z": "a21e40505d87599a",
+        "g": "e119530f2eb79d50",
+        "format": "kwh",
+        "maximum": "5",
+        "maximumunit": "mins",
+        "name": "",
+        "x": 580,
+        "y": 140,
+        "wires": [
+            [
+                "68b3153728ee6afe"
+            ]
+        ]
+    },
+    {
+        "id": "68b3153728ee6afe",
+        "type": "function",
+        "z": "a21e40505d87599a",
+        "g": "e119530f2eb79d50",
+        "name": "Store kwh",
+        "func": "const inputVal = msg.payload;\nif (inputVal == \"reset\"){\n flow.set(\"energyVal\",0); \n } else {\nsavedVal = flow.get('energyVal')||0;\nsavedVal += inputVal;\nflow.set(\"energyVal\",savedVal);\nmsg.payload = savedVal;\nreturn msg;\n}",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 600,
+        "y": 200,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "14f7026afa03138c",
+        "type": "inject",
+        "z": "a21e40505d87599a",
+        "g": "e119530f2eb79d50",
+        "name": "reset",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "01 00 * * *",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "reset",
+        "payloadType": "str",
+        "x": 450,
+        "y": 200,
+        "wires": [
+            [
+                "68b3153728ee6afe"
+            ]
+        ]
+    },
+    {
+        "id": "1dd2f150345d3e96",
+        "type": "inject",
+        "z": "a21e40505d87599a",
+        "g": "e119530f2eb79d50",
+        "name": "push",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "00 00 * * *",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 770,
+        "y": 140,
+        "wires": [
+            [
+                "843db30f572c01ac"
+            ]
+        ]
+    },
+    {
+        "id": "d23466319f54912a",
+        "type": "mysql",
+        "z": "a21e40505d87599a",
+        "g": "e119530f2eb79d50",
+        "mydb": "",
+        "name": "",
+        "x": 910,
+        "y": 200,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "843db30f572c01ac",
+        "type": "function",
+        "z": "a21e40505d87599a",
+        "g": "e119530f2eb79d50",
+        "name": "push to db",
+        "func": "const A = Date().toString ();\nconst Parts = A.split(\" \");\nconst Now = Parts[1]  +\" \"+ Parts[2] +\" \"+ Parts[3]  ;\n\n\n\nmsg.payload=[flow.get(\"energyVal\") , Now];\nmsg.topic=\"INSERT INTO kwH_day (`kwH`,`time`) VALUES (?,?);\"\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 910,
+        "y": 140,
+        "wires": [
+            [
+                "d23466319f54912a"
+            ]
+        ]
+    }
+]

@@ -1,0 +1,195 @@
+[
+    {
+        "id": "8aa2108e44cdddaf",
+        "type": "group",
+        "z": "a21e40505d87599a",
+        "name": "KWH/WEEK",
+        "style": {
+            "stroke": "#ff0000",
+            "label": true
+        },
+        "nodes": [
+            "72b080ee4a9dcbd9",
+            "5c980ebff7cf93c1",
+            "d6735ecd00149624",
+            "7744666ad14a8f2b",
+            "b64ef70e5339bdd3",
+            "00fc62dc0178092b",
+            "6a65b9ca15bde481",
+            "fdbcc444a05e39e0"
+        ],
+        "x": 94,
+        "y": 79,
+        "w": 892,
+        "h": 162
+    },
+    {
+        "id": "72b080ee4a9dcbd9",
+        "type": "mqtt in",
+        "z": "a21e40505d87599a",
+        "g": "8aa2108e44cdddaf",
+        "name": "zigbee2mqtt/energie meter",
+        "topic": "zigbee2mqtt/energie meter",
+        "qos": "0",
+        "datatype": "json",
+        "broker": "",
+        "nl": false,
+        "rap": false,
+        "inputs": 0,
+        "x": 230,
+        "y": 120,
+        "wires": [
+            [
+                "5c980ebff7cf93c1"
+            ]
+        ]
+    },
+    {
+        "id": "5c980ebff7cf93c1",
+        "type": "template",
+        "z": "a21e40505d87599a",
+        "g": "8aa2108e44cdddaf",
+        "name": "energia",
+        "field": "payload",
+        "fieldType": "msg",
+        "format": "handlebars",
+        "syntax": "mustache",
+        "template": "{{payload.power}}",
+        "output": "str",
+        "x": 440,
+        "y": 120,
+        "wires": [
+            [
+                "d6735ecd00149624"
+            ]
+        ]
+    },
+    {
+        "id": "d6735ecd00149624",
+        "type": "watt2kwh",
+        "z": "a21e40505d87599a",
+        "g": "8aa2108e44cdddaf",
+        "format": "kwh",
+        "maximum": "5",
+        "maximumunit": "mins",
+        "name": "",
+        "x": 580,
+        "y": 120,
+        "wires": [
+            [
+                "7744666ad14a8f2b"
+            ]
+        ]
+    },
+    {
+        "id": "7744666ad14a8f2b",
+        "type": "function",
+        "z": "a21e40505d87599a",
+        "g": "8aa2108e44cdddaf",
+        "name": "Store kwh",
+        "func": "const inputVal = msg.payload;\nif (inputVal == \"reset\"){\n flow.set(\"energyValWeek\",0); \n } else {\nsavedVal = flow.get('energyValWeek')||0;\nsavedVal += inputVal;\nflow.set(\"energyValWeek\",savedVal);\n\nmsg.payload = savedVal;\nreturn msg;\n}",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 440,
+        "y": 200,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "b64ef70e5339bdd3",
+        "type": "inject",
+        "z": "a21e40505d87599a",
+        "g": "8aa2108e44cdddaf",
+        "name": "reset",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "01 00 * * 1",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "reset",
+        "payloadType": "str",
+        "x": 270,
+        "y": 200,
+        "wires": [
+            [
+                "7744666ad14a8f2b"
+            ]
+        ]
+    },
+    {
+        "id": "00fc62dc0178092b",
+        "type": "inject",
+        "z": "a21e40505d87599a",
+        "g": "8aa2108e44cdddaf",
+        "name": "push",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "00 00 * * 1",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 750,
+        "y": 120,
+        "wires": [
+            [
+                "fdbcc444a05e39e0"
+            ]
+        ]
+    },
+    {
+        "id": "6a65b9ca15bde481",
+        "type": "mysql",
+        "z": "a21e40505d87599a",
+        "g": "8aa2108e44cdddaf",
+        "mydb": "",
+        "name": "",
+        "x": 870,
+        "y": 200,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "fdbcc444a05e39e0",
+        "type": "function",
+        "z": "a21e40505d87599a",
+        "g": "8aa2108e44cdddaf",
+        "name": "push to db",
+        "func": "const a = new Date().toString ();\nconst parts = a.split(\" \");\nconst Now = parts[1]  +\" \"+ parts[2] + \" \"+ parts[3];\n\nmsg.payload=[flow.get(\"energyValWeek\") , Now];\nmsg.topic=\"INSERT INTO kwH_week (`kwH`,`time`) VALUES (?,?);\"\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 890,
+        "y": 120,
+        "wires": [
+            [
+                "6a65b9ca15bde481"
+            ]
+        ]
+    }
+]

@@ -1,0 +1,127 @@
+[
+    {
+        "id": "b82eb9d6d8ba8802",
+        "type": "group",
+        "z": "a21e40505d87599a",
+        "name": "SERVERS",
+        "style": {
+            "stroke": "#ff0000",
+            "label": true
+        },
+        "nodes": [
+            "1b57cd2ca0cccfe0",
+            "6c4acbc0b3972be3",
+            "9d86cb9d0354ebf7",
+            "8a5374dcb6908a07",
+            "463b67af209728df"
+        ],
+        "x": 314,
+        "y": 139,
+        "w": 532,
+        "h": 142
+    },
+    {
+        "id": "1b57cd2ca0cccfe0",
+        "type": "mqtt in",
+        "z": "a21e40505d87599a",
+        "g": "b82eb9d6d8ba8802",
+        "name": "",
+        "topic": "zigbee2mqtt/ups-servers",
+        "qos": "0",
+        "datatype": "json",
+        "broker": "",
+        "nl": false,
+        "rap": false,
+        "inputs": 0,
+        "x": 450,
+        "y": 180,
+        "wires": [
+            [
+                "9d86cb9d0354ebf7"
+            ]
+        ]
+    },
+    {
+        "id": "6c4acbc0b3972be3",
+        "type": "mysql",
+        "z": "a21e40505d87599a",
+        "g": "b82eb9d6d8ba8802",
+        "mydb": "",
+        "name": "",
+        "x": 770,
+        "y": 180,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "9d86cb9d0354ebf7",
+        "type": "function",
+        "z": "a21e40505d87599a",
+        "g": "b82eb9d6d8ba8802",
+        "name": "get value",
+        "func": "let current = new Date();\nlet cDate = current.getFullYear() + '-' + (current.getMonth() + 1) + '-' + current.getDate();\nlet cTime = current.getHours() + \":\" + current.getMinutes() + \":\" + current.getSeconds();\nlet dateTime = cDate + ' ' + cTime;\n\nmsg.payload=[msg.payload.power, dateTime];\nmsg.topic=\"INSERT INTO ups_servers (`watt`,`time`) VALUES (?,?);\"\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 640,
+        "y": 180,
+        "wires": [
+            [
+                "6c4acbc0b3972be3"
+            ]
+        ]
+    },
+    {
+        "id": "8a5374dcb6908a07",
+        "type": "inject",
+        "z": "a21e40505d87599a",
+        "g": "b82eb9d6d8ba8802",
+        "name": "reset",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "59 11 * * *",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "reset",
+        "payloadType": "str",
+        "x": 410,
+        "y": 240,
+        "wires": [
+            [
+                "463b67af209728df"
+            ]
+        ]
+    },
+    {
+        "id": "463b67af209728df",
+        "type": "function",
+        "z": "a21e40505d87599a",
+        "g": "b82eb9d6d8ba8802",
+        "name": "reset rows",
+        "func": "msg.payload= \"CANC\";\nmsg.topic=\"DELETE FROM ups_servers WHERE  time   < (NOW() - INTERVAL 1 MINUTE);\"\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 550,
+        "y": 240,
+        "wires": [
+            [
+                "9d86cb9d0354ebf7"
+            ]
+        ]
+    }
+]

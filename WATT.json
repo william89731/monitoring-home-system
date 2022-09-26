@@ -1,0 +1,106 @@
+[
+    {
+        "id": "7d2bef41f629801b",
+        "type": "mqtt in",
+        "z": "a21e40505d87599a",
+        "g": "2aad1a6f26b90bae",
+        "name": "zigbee2mqtt/energie meter",
+        "topic": "zigbee2mqtt/energie meter",
+        "qos": "0",
+        "datatype": "json",
+        "broker": "",
+        "nl": false,
+        "rap": false,
+        "inputs": 0,
+        "x": 550,
+        "y": 260,
+        "wires": [
+            [
+                "f04e3a9b562786a3"
+            ]
+        ]
+    },
+    {
+        "id": "e70898926d048694",
+        "type": "mysql",
+        "z": "a21e40505d87599a",
+        "g": "2aad1a6f26b90bae",
+        "mydb": "",
+        "name": "",
+        "x": 910,
+        "y": 260,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "f04e3a9b562786a3",
+        "type": "function",
+        "z": "a21e40505d87599a",
+        "g": "2aad1a6f26b90bae",
+        "name": "get value",
+        "func": "let current = new Date();\nlet cDate = current.getFullYear() + '-' + (current.getMonth() + 1) + '-' + current.getDate();\nlet cTime = current.getHours() + \":\" + current.getMinutes() + \":\" + current.getSeconds();\nlet dateTime = cDate + ' ' + cTime;\n\nmsg.payload=[msg.payload.power, dateTime];\nmsg.topic=\"INSERT INTO power (`watt`,`time`) VALUES (?,?);\"\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 760,
+        "y": 260,
+        "wires": [
+            [
+                "e70898926d048694"
+            ]
+        ]
+    },
+    {
+        "id": "8c2162777ed003d5",
+        "type": "inject",
+        "z": "a21e40505d87599a",
+        "g": "2aad1a6f26b90bae",
+        "name": "reset",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "59 23 * * *",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "reset",
+        "payloadType": "str",
+        "x": 590,
+        "y": 320,
+        "wires": [
+            [
+                "d30f8b1fe52ba6f2"
+            ]
+        ]
+    },
+    {
+        "id": "d30f8b1fe52ba6f2",
+        "type": "function",
+        "z": "a21e40505d87599a",
+        "g": "2aad1a6f26b90bae",
+        "name": "reset rows",
+        "func": "msg.payload= \"CANC\";\nmsg.topic=\"DELETE FROM power WHERE  time   < (NOW() - INTERVAL 1 HOUR);\"\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 750,
+        "y": 320,
+        "wires": [
+            [
+                "e70898926d048694"
+            ]
+        ]
+    }
+]
