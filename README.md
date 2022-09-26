@@ -36,7 +36,7 @@ install iperf3 in each server:
 ```bash
 sudo apt update && sudo apt install -y iperf3
 ```
-import this [flow]() in nodered:
+import this [flow](https://github.com/william89731/monitoring-home-system/blob/main/SPEED.json) in nodered:
 
 ![immagine](https://user-images.githubusercontent.com/68069659/192300990-2f806d56-74d5-4fdf-895b-0468b93ca7fc.png)
 
@@ -101,7 +101,7 @@ monitor e alerts in grafana:
 
 ### Get started
 
-Import this [flow]() in nodered; send http request to glances and push data to mysql:
+Import this [flow](https://github.com/william89731/monitoring-home-system/blob/main/SYSTEM.json) in nodered; send http request to glances and push data to mysql:
 
 ![immagine](https://user-images.githubusercontent.com/68069659/192369074-96bf47f9-8261-4699-843c-10d104973139.png)
 
