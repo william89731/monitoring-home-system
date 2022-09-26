@@ -1,0 +1,144 @@
+[
+    {
+        "id": "a9b2e8ff19884ed6",
+        "type": "http request",
+        "z": "a21e40505d87599a",
+        "g": "cb96de3e916a9cc6",
+        "name": "",
+        "method": "GET",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "http://192.168.50.84:61208/api/3/all",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "credentials": {
+            "user": "",
+            "password": ""
+        },
+        "x": 730,
+        "y": 300,
+        "wires": [
+            [
+                "ce11bd24366f1efb"
+            ]
+        ]
+    },
+    {
+        "id": "49ba7376dce86ff6",
+        "type": "inject",
+        "z": "a21e40505d87599a",
+        "g": "cb96de3e916a9cc6",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "60",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 730,
+        "y": 240,
+        "wires": [
+            [
+                "a9b2e8ff19884ed6"
+            ]
+        ]
+    },
+    {
+        "id": "ce11bd24366f1efb",
+        "type": "function",
+        "z": "a21e40505d87599a",
+        "g": "cb96de3e916a9cc6",
+        "name": "push nodo1",
+        "func": "let current = new Date();\nlet cDate = current.getFullYear() + '-' + (current.getMonth() + 1) + '-' + current.getDate();\nlet cTime = current.getHours() + \":\" + current.getMinutes() + \":\" + current.getSeconds();\nlet dateTime = cDate + ' ' + cTime;\n\nlet Temp = msg.payload.sensors[1].value;\nlet Ram = msg.payload.quicklook.mem;\nlet Cpu = msg.payload.quicklook.cpu;\nlet Disc = msg.payload.fs[2].percent;\n\nmsg.payload=[Temp,Cpu,Ram,Disc,dateTime];\nmsg.topic=\"INSERT INTO nodo1 (`temp`,`cpu`,`ram`,`disc`,`time`) VALUES (?,?,?,?,?);\"\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 930,
+        "y": 300,
+        "wires": [
+            [
+                "425b94629ed16c3e"
+            ]
+        ]
+    },
+    {
+        "id": "75d62a08803da248",
+        "type": "function",
+        "z": "a21e40505d87599a",
+        "g": "cb96de3e916a9cc6",
+        "name": "reset rows",
+        "func": "msg.payload= \"CANC\";\nmsg.topic=\"DELETE FROM nodo1 WHERE  time   < (NOW() - INTERVAL 1 HOUR);\"\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 930,
+        "y": 180,
+        "wires": [
+            [
+                "425b94629ed16c3e"
+            ]
+        ]
+    },
+    {
+        "id": "f46b7ca649be6345",
+        "type": "inject",
+        "z": "a21e40505d87599a",
+        "g": "cb96de3e916a9cc6",
+        "name": "reset",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "59 23 * * *",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "reset",
+        "payloadType": "str",
+        "x": 730,
+        "y": 180,
+        "wires": [
+            [
+                "75d62a08803da248"
+            ]
+        ]
+    },
+    {
+        "id": "425b94629ed16c3e",
+        "type": "mysql",
+        "z": "a21e40505d87599a",
+        "g": "cb96de3e916a9cc6",
+        "mydb": "",
+        "name": "",
+        "x": 910,
+        "y": 240,
+        "wires": [
+            []
+        ]
+    }
+]
