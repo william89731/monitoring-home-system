@@ -7,13 +7,13 @@
 
 # Monitoring Home System
 
-keep under control the network, energy and devices.
+keep under control the network, energy and devices. **_Tested on OS debian based_**
 
-### Disclaimer
 
-```tested on OS debian based```
 
-# NETWORK
+
+
+## ```Network```
 
 ### Requirements
 
@@ -46,7 +46,7 @@ set the alerts in grafana:
 ![immagine](https://user-images.githubusercontent.com/68069659/192301423-56563a5d-3cc4-4da0-8b43-3ca9b359db2b.png)
 
 
-# ENERGY
+## ```Energy```
 
 ### Requirements
 
@@ -87,7 +87,7 @@ monitor e alerts in grafana:
 
 ![immagine](https://user-images.githubusercontent.com/68069659/192302669-ca7b4989-2e5e-4cc3-99f0-0101245828f1.png)
 
-# SERVERS RESOURCES
+## ```Servers resources```
 
 ### Requirements
 
