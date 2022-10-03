@@ -97,17 +97,27 @@ monitor e alerts in grafana:
 
 [grafana](https://grafana.com/);
 
-[glances](https://nicolargo.github.io/glances/)
+[lm-sensors](https://github.com/lm-sensors/lm-sensors)
+
+[prometheus](https://prometheus.io/docs/introduction/overview/)
 
 ### Get started
 
-Import this [flow](https://github.com/william89731/monitoring-home-system/blob/main/SYSTEM.json) in nodered; send http request to glances and push data to mysql:
+install lm-sensors:
 
-![immagine](https://user-images.githubusercontent.com/68069659/192369074-96bf47f9-8261-4699-843c-10d104973139.png)
+```bash
+sudo apt install lm-sensors
+```
 
-Monitoring and alert in grafana:
+Import this [flow]() in nodered; push data to mysql:
 
-![immagine](https://user-images.githubusercontent.com/68069659/192369350-2d0bd1d9-0a26-46e2-beb3-46110b7c5311.png)
+![immagine](https://user-images.githubusercontent.com/68069659/193621762-6a71a0f5-82fd-4bf6-99e9-8133fdbb7355.png)
+
+
+Monitoring status and alert in grafana(datasource prometheus):
+
+![immagine](https://user-images.githubusercontent.com/68069659/193623034-5b6a3014-19cc-4690-9f62-43dbc6a2f9ac.png)
+
 
 
 
