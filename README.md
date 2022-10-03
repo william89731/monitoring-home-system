@@ -109,7 +109,7 @@ install lm-sensors:
 sudo apt install lm-sensors
 ```
 
-Import this [flow]() in nodered; push data to mysql:
+Import this [flow](https://github.com/william89731/monitoring-home-system/blob/main/TEMP.json) in nodered; push data to mysql:
 
 ![immagine](https://user-images.githubusercontent.com/68069659/193621762-6a71a0f5-82fd-4bf6-99e9-8133fdbb7355.png)
 
