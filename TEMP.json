@@ -1,0 +1,176 @@
+[
+    {
+        "id": "172e8bfd6fb3ab04",
+        "type": "inject",
+        "z": "af236674ace852db",
+        "g": "c49a19341f4dd6bd",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "60",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "sensors ",
+        "payloadType": "str",
+        "x": 360,
+        "y": 260,
+        "wires": [
+            [
+                "d87fc343e2d0fea7",
+                "bebaab4afe3e51a1"
+            ]
+        ]
+    },
+    {
+        "id": "d87fc343e2d0fea7",
+        "type": "ssh-v3",
+        "z": "af236674ace852db",
+        "g": "c49a19341f4dd6bd",
+        "name": "nodo1",
+        "conf": "",
+        "debug": false,
+        "x": 350,
+        "y": 320,
+        "wires": [
+            [
+                "782047bd3262f475"
+            ]
+        ]
+    },
+    {
+        "id": "782047bd3262f475",
+        "type": "function",
+        "z": "af236674ace852db",
+        "g": "c49a19341f4dd6bd",
+        "name": "temp",
+        "func": "const temp = msg.session.stdout[0];\nconst Parts = temp.split(\" \")\nconst value = Parts[22];\nconst newTemp = value.replace(/[+°C]/g, \"\");\nglobal.set(\"tempNodo1\",newTemp);\nmsg.payload = newTemp;\n\n//msg.payload = Parts;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 470,
+        "y": 320,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "1fb8b1568dc58c80",
+        "type": "inject",
+        "z": "af236674ace852db",
+        "g": "c49a19341f4dd6bd",
+        "name": "reset",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "59 23 * * *",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "reset",
+        "payloadType": "str",
+        "x": 690,
+        "y": 420,
+        "wires": [
+            [
+                "cfb83bf57ea90f96"
+            ]
+        ]
+    },
+    {
+        "id": "cfb83bf57ea90f96",
+        "type": "function",
+        "z": "af236674ace852db",
+        "g": "c49a19341f4dd6bd",
+        "name": "reset rows",
+        "func": "msg.payload= \"CANC\";\nmsg.topic=\"DELETE FROM temperatura WHERE  time   < (NOW() - INTERVAL 1 HOUR);\"\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 690,
+        "y": 360,
+        "wires": [
+            [
+                "ed83b3f17b040846"
+            ]
+        ]
+    },
+    {
+        "id": "ed83b3f17b040846",
+        "type": "mysql",
+        "z": "af236674ace852db",
+        "g": "c49a19341f4dd6bd",
+        "mydb": "",
+        "name": "",
+        "x": 790,
+        "y": 300,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "3d8a27497322f59f",
+        "type": "function",
+        "z": "af236674ace852db",
+        "g": "c49a19341f4dd6bd",
+        "name": "push ",
+        "func": "let current = new Date();\nlet cDate = current.getFullYear() + '-' + (current.getMonth() + 1) + '-' + current.getDate();\nlet cTime = current.getHours() + \":\" + current.getMinutes() + \":\" + current.getSeconds();\nlet dateTime = cDate + ' ' + cTime;\n\nlet nodo1 = global.get(\"tempNodo1\");\nl\n\n\nmsg.payload=[nodo1,dateTime];\nmsg.topic=\"INSERT INTO temperatura (`nodo1`,`time`) VALUES (?,?);\"\n\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 650,
+        "y": 260,
+        "wires": [
+            [
+                "ed83b3f17b040846"
+            ]
+        ]
+    },
+    {
+        "id": "bebaab4afe3e51a1",
+        "type": "delay",
+        "z": "af236674ace852db",
+        "g": "c49a19341f4dd6bd",
+        "name": "",
+        "pauseType": "delay",
+        "timeout": "5",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 500,
+        "y": 260,
+        "wires": [
+            [
+                "3d8a27497322f59f"
+            ]
+        ]
+    }
+]
